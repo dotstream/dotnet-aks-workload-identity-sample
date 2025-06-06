@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: default
+  name: test
+  labels:
+    azure.workload.identity/use: "true"
+  annotations:
+    azure.workload.identity/client-id: "[CLIENT_ID]"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: test-role
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces", "pods"]
+    verbs: ["get","watch","list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: test-viewer
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: test-role
+subjects:
+- kind: User
+  name: [PRINCIPAL_ID]
+  namespace: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-workload-identity
+  namespace: default
+  labels:
+    app: test-workload-identity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-workload-identity
+  template:
+    metadata:
+      labels:
+        azure.workload.identity/use: "true"
+        app: test-workload-identity
+    spec:
+      serviceAccountName: test
+      containers:
+      - name: test
+        image: [DOCKER_IMAGE_TAG]
+        imagePullPolicy: Always
+        env:
+          - name: DOTNET_K8S_SERVER
+            value: '[AKS_URL_SERVER]'
+          - name: DOTNET_K8S_NS
+            value: 'default'
+          - name: DOTNET_KUBELOGIN_PATH
+            value: '/app/kubelogin'
