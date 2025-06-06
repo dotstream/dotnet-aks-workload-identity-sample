@@ -24,4 +24,5 @@ WORKDIR /app
 COPY --from=build /kubelogin/kubelogin .
 COPY --from=publish /app/publish .
 
-ENTRYPOINT ["dotnet", "dotnet-aks-workload-identity-sample.dll"]
+# ENTRYPOINT ["dotnet", "dotnet-aks-workload-identity-sample.dll"]
+ENTRYPOINT ["sh"]
