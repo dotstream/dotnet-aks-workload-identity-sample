@@ -12,7 +12,7 @@ COPY ["Program.cs", "."]
 RUN dotnet build "dotnet-aks-workload-identity-sample.csproj" -c Release -o /app/build
 RUN apk add unzip
 RUN chmod +x /src/download-kubelogin.sh
-RUN /src/download-kubelogin.sh $BUILDPLATFORM "v0.2.8"
+RUN /src/download-kubelogin.sh $TARGETPLATFORM "v0.2.8"
 
 
 FROM build AS publish
