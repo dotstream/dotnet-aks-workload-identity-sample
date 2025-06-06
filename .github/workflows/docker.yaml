@@ -23,7 +23,7 @@ jobs:
           dotnet-version: 9.0.300
       - name: Set env variables
         run: |
-          echo "RELEASE_VERSION"=${{ github.ref_name }}
+          echo "RELEASE_VERSION"=${{ github.ref_name }} >> $GITHUB_ENV
           echo "DOCKER_IMAGE=${{ vars.REGISTRY_SERVER }}/${{ vars.REGISTRY_ORGANISATION }}/${{ vars.DOCKER_IMAGE_NAME }}" >> $GITHUB_ENV
       - name: Login to container registry
         uses: docker/login-action@v3
